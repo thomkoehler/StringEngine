@@ -1,0 +1,26 @@
+name: StringEngine
+version: 0.0.1
+cabal-version: 1.2
+build-type: Simple
+license: AllRightsReserved
+license-file: ""
+data-dir: ""
+
+library
+    build-depends: base >=4
+    exposed-modules: Text.StringEngine
+    exposed: True
+    buildable: True
+    hs-source-dirs: src
+    other-modules: Text.StringEngine.Lexer
+    ghc-options: -Wall -rtsopts
+
+test-suite Test
+    build-depends: base >=4, HTF >0.9
+    type: exitcode-stdio-1.0
+    main-is: Test.hs
+    buildable: True
+    hs-source-dirs: src
+    other-modules: Text.StringEngine.Lexer
+    ghc-options: -Wall -rtsopts
+

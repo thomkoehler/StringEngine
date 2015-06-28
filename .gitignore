@@ -1,3 +1,4 @@
+.HTF/
 dist
 cabal-dev
 *.o
