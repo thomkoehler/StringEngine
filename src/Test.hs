@@ -1,14 +1,14 @@
 ----------------------------------------------------------------------------------------------------
 
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Main(main) where
 
 import Test.Framework
 
-
 import Text.StringEngine.Lexer
-import Text.StringEngine.Parser
+import Text.StringEngine
 
 {-# ANN module ("HLint: ignore Use camelCase" :: String) #-}
 
@@ -50,6 +50,16 @@ prop_parser = stringEngine lookupFun "Hello <lisa> and <peter>!" == "Hello Lisa 
 
       lookupFun :: String -> Maybe String
       lookupFun v = lookup v vars
+
+
+prop_se0 :: Bool
+prop_se0 = [se|Hello World|] == "Hello World"
+
+
+prop_se1 :: Bool
+prop_se1 = [se|Hello <w>|] == "Hello World"
+   where
+      w = "World"
 
 ----------------------------------------------------------------------------------------------------
 

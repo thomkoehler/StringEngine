@@ -7,7 +7,7 @@ license-file: ""
 data-dir: ""
 
 test-suite Test
-    build-depends: base >=4, HTF >0.9
+    build-depends: base >=4, HTF >0.9, template-haskell -any
     type: exitcode-stdio-1.0
     main-is: Test.hs
     buildable: True
@@ -16,7 +16,7 @@ test-suite Test
     ghc-options: -Wall -rtsopts
 
 library
-    build-depends: base >=4
+    build-depends: base >=4, template-haskell -any
     exposed-modules: Text.StringEngine
     exposed: True
     buildable: True
