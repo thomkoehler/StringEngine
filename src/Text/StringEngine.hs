@@ -1,7 +1,10 @@
 
 ---------------------------------------------------------------------------------------------------
 
-module Text.StringEngine where
+module Text.StringEngine(stringEngine) where
+
+
+import Text.StringEngine.Parser(stringEngine)
 
 ---------------------------------------------------------------------------------------------------
 
