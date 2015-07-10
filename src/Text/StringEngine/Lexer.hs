@@ -20,7 +20,7 @@ pattern EscChar = '\\'
 
 
 data Token
-   = SimpleStr String
+   = StrLiteral String
    | Var String
    | ForEach
    deriving(Show, Eq)
@@ -35,7 +35,7 @@ data LexerState
 lexer :: String -> [Token]
 lexer str = case endState of
    InString [] -> filteredTokens
-   InString str -> filteredTokens ++ [SimpleStr str]
+   InString str -> filteredTokens ++ [StrLiteral str]
    _ -> error "Unexpected end"
 
    where
@@ -43,14 +43,14 @@ lexer str = case endState of
       filteredTokens = filter notEmpty tokens
 
       step (prefixTokens, currentState) char = case (currentState, char) of
-         (InString prefixStr, DelBeginChar) -> (prefixTokens ++ [SimpleStr prefixStr], InStatements "")
+         (InString prefixStr, DelBeginChar) -> (prefixTokens ++ [StrLiteral prefixStr], InStatements "")
          (InString prefixStr, EscChar) -> (prefixTokens, Escape prefixStr)
          (InString prefixStr, _) -> (prefixTokens, InString (prefixStr ++ [char]))
          (Escape prefixStr, _) -> (prefixTokens, InString (prefixStr ++ [char]))
          (InStatements prefixStr, DelEndChar) -> (prefixTokens ++ statementLexer prefixStr, InString "")
          (InStatements prefixStr, _) -> (prefixTokens, InStatements (prefixStr ++ [char]))
 
-      notEmpty (SimpleStr []) = False
+      notEmpty (StrLiteral []) = False
       notEmpty _ = True
 
 

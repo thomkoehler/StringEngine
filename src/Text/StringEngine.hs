@@ -3,28 +3,24 @@
 
 {-# LANGUAGE TemplateHaskell #-}
 
-module Text.StringEngine(stringEngine, se) where
+module Text.StringEngine(stringEngine, str) where
 
-import qualified Language.Haskell.TH as TH
+import Language.Haskell.TH
 import Language.Haskell.TH.Quote
 
 import Text.StringEngine.Parser(stringEngine)
 
+import Text.StringEngine.DynAny --TODO
+
 ---------------------------------------------------------------------------------------------------
 
-se :: QuasiQuoter
-se = QuasiQuoter
+str :: QuasiQuoter
+str = QuasiQuoter
    {
-      quoteExp = quoteExpSe,
+      quoteExp = dataToExpQ (const Nothing),
       quotePat = error "Cannot use se as a pattern",
       quoteType = error "Cannot use se as a type",
       quoteDec = error "Cannot use se as a dec"
    }
-
-
-quoteExpSe :: String -> TH.Q TH.Exp
-quoteExpSe str = do
-   let out = stringEngine (\_ -> Nothing) str
-   dataToExpQ (const Nothing) out
 
 ---------------------------------------------------------------------------------------------------
