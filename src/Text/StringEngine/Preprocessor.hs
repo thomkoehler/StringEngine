@@ -15,7 +15,7 @@ pattern EscChar = '\\'
 
 data Token
    = StrLiteral String
-   | Stmts String
+   | Expressions String
    deriving(Show, Eq)
 
 
@@ -44,7 +44,7 @@ lexer str = case endState of
          (InString prefixStr, EscChar) -> (prefixTokens, Escape prefixStr)
          (InString prefixStr, _) -> (prefixTokens, InString (prefixStr ++ [_char]))
          (Escape prefixStr, _) -> (prefixTokens, InString (prefixStr ++ [_char]))
-         (InStatements prefixStr, DelEndChar) -> (prefixTokens ++ [Stmts prefixStr], InString "")
+         (InStatements prefixStr, DelEndChar) -> (prefixTokens ++ [Expressions prefixStr], InString "")
          (InStatements prefixStr, _) -> (prefixTokens, InStatements (prefixStr ++ [_char]))
 
       notEmpty (StrLiteral []) = False
@@ -52,7 +52,7 @@ lexer str = case endState of
 
 
 toString :: Token -> String
-toString (Stmts str) = str
+toString (Expressions str) = str
 toString (StrLiteral str) = "\"" ++ (intercalate "\\n" $ lines str) ++ "\""
 
 
