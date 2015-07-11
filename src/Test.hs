@@ -7,17 +7,34 @@ module Main(main) where
 
 import Test.Framework
 
-import Text.StringEngine.Lexer
-import Text.StringEngine
+import Text.StringEngine.Preprocessor
 
 {-# ANN module ("HLint: ignore Use camelCase" :: String) #-}
 
 ----------------------------------------------------------------------------------------------------
 
+
 main :: IO ()
 main = do
+
+   putStrLn $ preprocessor "a\nb\n"
+
    htfMain htf_thisModulesTests
 
+
+prop_SimpleStr :: Bool
+prop_SimpleStr = preprocessor "<Hello World>" == "Hello World"
+
+prop_SimpleStrLiteral :: Bool
+prop_SimpleStrLiteral = preprocessor "Hello World" == "\"Hello World\""
+
+prop_Str :: Bool
+prop_Str = preprocessor "<Hello> World" == "Hello\" World\""
+
+prop_Nl :: Bool
+prop_Nl = preprocessor "a\nb" == "\"a\\nb\""
+
+{--
 
 prop_SimpleStr :: Bool
 prop_SimpleStr = lexer "hello" == [SimpleStr "hello"]
@@ -53,6 +70,9 @@ prop_parser = stringEngine lookupFun "Hello <lisa> and <peter>!" == "Hello Lisa 
 
 prop_str :: Bool
 prop_str = [str|Hello World|] == "Hello World"
+
+
+--}
 
 ----------------------------------------------------------------------------------------------------
 

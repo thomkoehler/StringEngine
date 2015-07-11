@@ -1,16 +1,9 @@
 
 ---------------------------------------------------------------------------------------------------
 
-{-# LANGUAGE TemplateHaskell #-}
+module Text.StringEngine(str) where
 
-module Text.StringEngine(stringEngine, str) where
-
-import Language.Haskell.TH
 import Language.Haskell.TH.Quote
-
-import Text.StringEngine.Parser(stringEngine)
-
-import Text.StringEngine.DynAny --TODO
 
 ---------------------------------------------------------------------------------------------------
 
