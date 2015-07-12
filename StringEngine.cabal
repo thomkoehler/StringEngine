@@ -3,22 +3,27 @@ version: 0.0.1
 cabal-version: >=1.2
 build-type: Simple
 license: AllRightsReserved
+license-file: ""
 data-dir: ""
 
-test-suite Test
-    build-depends: base >=4, HTF >0.9, template-haskell -any, containers -any, parsec -any, mtl -any
-    type: exitcode-stdio-1.0
-    main-is: Test.hs
-    buildable: True
-    hs-source-dirs: src
-    other-modules:
-    ghc-options: -Wall -rtsopts
-
 library
-    build-depends: base >=4, template-haskell -any, containers -any, parsec -any, mtl -any
+    build-depends: base >=4, template-haskell -any, containers -any,
+                   parsec -any, mtl -any
     exposed-modules: Text.StringEngine
     exposed: True
     buildable: True
     hs-source-dirs: src
-    other-modules: Text.StringEngine.Preprocessor, Text.StringEngine.Parser
+    other-modules: Text.StringEngine.Preprocessor
+                   Text.StringEngine.Parser,
+                   Text.StringEngine.Engine
     ghc-options: -Wall -rtsopts
+
+test-suite Test
+    build-depends: base >=4, HTF >0.9, template-haskell -any,
+                   containers -any, parsec -any, mtl -any
+    type: exitcode-stdio-1.0
+    main-is: Test.hs
+    buildable: True
+    hs-source-dirs: src
+    ghc-options: -Wall -rtsopts
+

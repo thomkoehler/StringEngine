@@ -7,6 +7,7 @@ module Main(main) where
 import Test.Framework
 
 import Text.StringEngine.Preprocessor
+import Text.StringEngine.Parser
 
 {-# ANN module ("HLint: ignore Use camelCase" :: String) #-}
 
@@ -32,6 +33,9 @@ prop_Esc0 = preprocessor "\\<" == "\"<\""
 
 prop_Esc1 :: Bool
 prop_Esc1 = preprocessor "\\>" == "\">\""
+
+prop_Parser :: Bool
+prop_Parser = parseStr "\"Hello World\"" == [StrLit "Hello World"]
 
 ----------------------------------------------------------------------------------------------------
 

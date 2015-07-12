@@ -4,11 +4,12 @@
 
 module Text.StringEngine.Parser
 (
-   StringExpr(..)
+   StrExpr(..),
+   parseStr
 )
 where
 
-import Text.Parsec hiding(State, parse)
+import Text.Parsec
 import qualified Text.Parsec.Token as P
 import Text.Parsec.Language
 
@@ -16,7 +17,9 @@ import Control.Monad.Identity
 
 ----------------------------------------------------------------------------------------------------
 
-languageDef :: GenLanguageDef String st Identity
+type Parser a = ParsecT String () Identity a
+
+languageDef :: GenLanguageDef String () Identity
 languageDef = P.LanguageDef
    {
       P.commentStart = "/*",
@@ -36,12 +39,42 @@ languageDef = P.LanguageDef
    }
 
 
-data StringExpr
+data StrExpr
    = StrLit String
+   | Var String
+   deriving(Show, Eq)
 
 
+lexer :: P.GenTokenParser String () Identity
 lexer = P.makeTokenParser languageDef
 
-identifier  = P.identifier lexer
+
+identifier :: Parser String
+identifier = P.identifier lexer
+
+stringLiteral :: Parser String
+stringLiteral = P.stringLiteral lexer
+
+
+strExpr :: Parser StrExpr
+strExpr = choice
+   [
+      strLit,
+      var
+   ]
+
+
+strLit :: Parser StrExpr
+strLit = liftM StrLit stringLiteral
+
+
+var :: Parser StrExpr
+var = liftM Var identifier
+
+
+parseStr :: String -> [StrExpr]
+parseStr str = case (parse (many1 strExpr) "" str) of
+   Left err -> error $ show err
+   Right xs -> xs
 
 ----------------------------------------------------------------------------------------------------
