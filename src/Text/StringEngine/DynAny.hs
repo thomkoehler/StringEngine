@@ -4,9 +4,6 @@
 
 module Text.StringEngine.DynAny where
 
-
-import qualified Data.Map as Map
-
 ----------------------------------------------------------------------------------------------------
 
 data DynAny
@@ -30,9 +27,5 @@ instance (ToDynAny d) => ToDynAny [d] where
 instance (ToDynAny d) => ToDynAny (Maybe d) where
    toDynAny (Just d) = toDynAny d
    toDynAny Nothing = DynNothing
-
-
-type Bindings = Map.Map String DynAny
-
 
 ----------------------------------------------------------------------------------------------------
