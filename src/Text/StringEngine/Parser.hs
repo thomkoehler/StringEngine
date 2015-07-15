@@ -1,7 +1,5 @@
 ----------------------------------------------------------------------------------------------------
 
-{-# LANGUAGE PatternSynonyms #-}
-
 module Text.StringEngine.Parser
 (
    StrExpr(..),

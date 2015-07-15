@@ -4,6 +4,9 @@
 
 module Text.StringEngine.DynAny where
 
+
+import Text.StringEngine.ToString
+
 ----------------------------------------------------------------------------------------------------
 
 data DynAny
@@ -27,5 +30,10 @@ instance (ToDynAny d) => ToDynAny [d] where
 instance (ToDynAny d) => ToDynAny (Maybe d) where
    toDynAny (Just d) = toDynAny d
    toDynAny Nothing = DynNothing
+
+
+instance ToString DynAny where
+   toString (DynString str) = str
+   toString _ = error "toString is not defined."
 
 ----------------------------------------------------------------------------------------------------

@@ -6,6 +6,8 @@ module Text.StringEngine.Preprocessor(preprocessor) where
 
 import Data.List(foldl', intercalate)
 
+import Text.StringEngine.ToString
+
 ----------------------------------------------------------------------------------------------------
 
 pattern DelBeginChar = '<'
@@ -23,6 +25,11 @@ data LexerState
    = InString String
    | Escape String
    | InStatements String
+
+
+instance ToString Token where
+   toString (Expressions str) = str
+   toString (StrLiteral str) = "\"" ++ (intercalate "\\n" $ lines str) ++ "\""
 
 
 preprocessor :: String -> String
@@ -49,11 +56,5 @@ lexer str = case endState of
 
       notEmpty (StrLiteral []) = False
       notEmpty _ = True
-
-
-toString :: Token -> String
-toString (Expressions str) = str
-toString (StrLiteral str) = "\"" ++ (intercalate "\\n" $ lines str) ++ "\""
-
 
 ----------------------------------------------------------------------------------------------------
