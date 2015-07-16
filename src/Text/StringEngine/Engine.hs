@@ -1,7 +1,7 @@
 
 ----------------------------------------------------------------------------------------------------
 
-module Text.StringEngine.Engine() where
+module Text.StringEngine.Engine(strEngine) where
 
 import qualified Data.Map as Map
 
@@ -32,9 +32,9 @@ lookupScope _ _ = Nothing
 
 
 createBindings :: ToString ts => [(String, ts)] -> Bindings
-createBindings = Map.fromList $ map step
+createBindings xs = ScopeBindings $ Map.fromList $ map step xs
    where
-      step (name, ts) = (name, toString ts)
+      step (name, ts) = (name, DynString (toString ts))
 
 
 getBinding :: Bindings -> String -> DynAny
@@ -47,13 +47,14 @@ getBinding (ContextBindings c l) name = case lookupScope l name of
    Nothing -> getBinding c name
 
 
-strEngine :: Bindings -> String -> String
+strEngine :: ToString ts => [(String, ts)] -> String -> String
 strEngine vars input =
    let
+      bindings = createBindings vars
       afterPP = preprocessor input
       exprs = parseStr afterPP
    in
-      concat $ map (exprToString vars) exprs
+      concat $ map (exprToString bindings) exprs
 
 
 exprToString :: Bindings -> StrExpr -> String
