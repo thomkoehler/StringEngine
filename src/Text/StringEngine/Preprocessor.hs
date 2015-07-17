@@ -33,7 +33,7 @@ instance ToString Token where
 
 
 preprocessor :: String -> String
-preprocessor = concat . map toString . lexer
+preprocessor = concatMap toString . lexer
 
 
 lexer :: String -> [Token]

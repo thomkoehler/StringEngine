@@ -13,21 +13,14 @@ import Text.StringEngine.DynAny
 import Text.StringEngine.ToString
 
 import Data.Maybe(fromMaybe)
+import Data.List(foldl')
 
 ----------------------------------------------------------------------------------------------------
 
 
 data Bindings
-   = ScopeBindings
-      {
-         scope :: Map.Map String DynAny
-      }
-
-   | ContextBindings
-      {
-         context :: Bindings,
-         locals :: Bindings
-      }
+   = ScopeBindings (Map.Map String DynAny)
+   | ContextBindings Bindings Bindings
 
 
 data Var = forall da. ToDynAny da => Var String da
@@ -68,11 +61,14 @@ exprToString _ (ExprStrLit str) = str
 
 exprToString bindings (ExprVar name) = toString $ getBinding bindings name
 
-exprToString bindings (ExprForeach selectorName listName exprs) =
-   let
+exprToString bindings (ExprForeach selectorName listName exprs) = foldl' step "" list
+   where
       list = toList $ getBinding bindings listName
-   in
-      undefined
 
+      step prefix var =
+         let
+            localBindings = ContextBindings bindings $ createBindings [Var selectorName var]
+         in
+            prefix ++ concatMap (exprToString localBindings) exprs
 
 ----------------------------------------------------------------------------------------------------

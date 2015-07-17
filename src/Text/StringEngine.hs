@@ -14,9 +14,9 @@ str :: QuasiQuoter
 str = QuasiQuoter
    {
       quoteExp = dataToExpQ (const Nothing),
-      quotePat = error "Cannot use se as a pattern",
-      quoteType = error "Cannot use se as a type",
-      quoteDec = error "Cannot use se as a dec"
+      quotePat = error "Cannot use str as a pattern",
+      quoteType = error "Cannot use str as a type",
+      quoteDec = error "Cannot use str as a dec"
    }
 
 ---------------------------------------------------------------------------------------------------

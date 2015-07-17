@@ -28,7 +28,7 @@ languageDef = P.LanguageDef
       P.identLetter = alphaNum <|> oneOf "_'",
       P.reservedNames =
          [
-            "foreach",
+            "for",
             "end",
             "in"
          ],
@@ -79,7 +79,7 @@ var = liftM ExprVar identifier
 
 foreach :: Parser StrExpr
 foreach = do
-   reserved "foreach"
+   reserved "for"
    sel <- identifier
    reserved "in"
    list <- identifier

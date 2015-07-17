@@ -19,6 +19,10 @@ class ToDynAny a where
    toDynAny :: a -> DynAny
 
 
+instance ToDynAny DynAny where
+   toDynAny = id
+
+
 instance ToDynAny String where
    toDynAny = DynString
 
