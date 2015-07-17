@@ -20,7 +20,7 @@ class ToDynAny a where
 
 
 instance ToDynAny String where
-   toDynAny str = DynString str
+   toDynAny = DynString
 
 
 instance (ToDynAny d) => ToDynAny [d] where

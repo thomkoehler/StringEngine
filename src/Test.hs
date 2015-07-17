@@ -36,16 +36,16 @@ prop_Esc1 :: Bool
 prop_Esc1 = preprocessor "\\>" == "\">\""
 
 prop_Parser :: Bool
-prop_Parser = parseStr "\"Hello World\"" == [StrLit "Hello World"]
+prop_Parser = parseStr "\"Hello World\"" == [ExprStrLit "Hello World"]
 
 prop_StrEng_Var :: Bool
-prop_StrEng_Var = strEngine [("v1", "hallo")] "<v1>" == "hallo"
+prop_StrEng_Var = strEngine [Var "v1" "hallo"] "<v1>" == "hallo"
 
 prop_StrEng_Str :: Bool
-prop_StrEng_Str = strEngine [("v1", "hallo")] "v1" == "v1"
+prop_StrEng_Str = strEngine [Var "v1" "hallo"] "v1" == "v1"
 
 prop_StrEng_VarAndStr :: Bool
-prop_StrEng_VarAndStr = strEngine [("v1", "Hello"), ("v2", "World")] "<v1> <v2>!" == "Hello World!"
+prop_StrEng_VarAndStr = strEngine [Var "v1" "Hello", Var "v2" "World"] "<v1> <v2>!" == "Hello World!"
 
 ----------------------------------------------------------------------------------------------------
 

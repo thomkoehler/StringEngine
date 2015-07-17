@@ -14,7 +14,8 @@ library
     other-modules: Text.StringEngine.Preprocessor
                    Text.StringEngine.Parser,
                    Text.StringEngine.Engine,
-                   Text.StringEngine.ToString
+                   Text.StringEngine.ToString,
+                   Text.StringEngine.DynAny
 
     ghc-options: -Wall -rtsopts
 

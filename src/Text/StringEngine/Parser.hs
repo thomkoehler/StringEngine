@@ -38,8 +38,8 @@ languageDef = P.LanguageDef
 
 
 data StrExpr
-   = StrLit String
-   | Var String
+   = ExprStrLit String
+   | ExprVar String
    deriving(Show, Eq)
 
 
@@ -63,11 +63,11 @@ strExpr = choice
 
 
 strLit :: Parser StrExpr
-strLit = liftM StrLit stringLiteral
+strLit = liftM ExprStrLit stringLiteral
 
 
 var :: Parser StrExpr
-var = liftM Var identifier
+var = liftM ExprVar identifier
 
 
 parseStr :: String -> [StrExpr]
