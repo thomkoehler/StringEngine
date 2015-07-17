@@ -36,4 +36,10 @@ instance ToString DynAny where
    toString (DynString str) = str
    toString _ = error "toString is not defined."
 
+
+toList :: DynAny -> [DynAny]
+toList da = case da of
+   DynList ds -> ds
+   _ -> error "List expected."
+
 ----------------------------------------------------------------------------------------------------

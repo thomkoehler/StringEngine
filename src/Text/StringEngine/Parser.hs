@@ -28,7 +28,9 @@ languageDef = P.LanguageDef
       P.identLetter = alphaNum <|> oneOf "_'",
       P.reservedNames =
          [
-            "foreach"
+            "foreach",
+            "end",
+            "in"
          ],
       P.opStart = P.opLetter languageDef,
       P.opLetter = oneOf ":!#$%&*+./<=>?@\\^|-~",
@@ -40,6 +42,7 @@ languageDef = P.LanguageDef
 data StrExpr
    = ExprStrLit String
    | ExprVar String
+   | ExprForeach String String [StrExpr]
    deriving(Show, Eq)
 
 
@@ -53,12 +56,16 @@ identifier = P.identifier lexer
 stringLiteral :: Parser String
 stringLiteral = P.stringLiteral lexer
 
+reserved :: String -> Parser ()
+reserved = P.reserved lexer
+
 
 strExpr :: Parser StrExpr
 strExpr = choice
    [
       strLit,
-      var
+      var,
+      foreach
    ]
 
 
@@ -68,6 +75,17 @@ strLit = liftM ExprStrLit stringLiteral
 
 var :: Parser StrExpr
 var = liftM ExprVar identifier
+
+
+foreach :: Parser StrExpr
+foreach = do
+   reserved "foreach"
+   sel <- identifier
+   reserved "in"
+   list <- identifier
+   exprs <- many strExpr
+   reserved "end"
+   return $ ExprForeach sel list exprs
 
 
 parseStr :: String -> [StrExpr]

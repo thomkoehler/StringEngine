@@ -64,7 +64,14 @@ strEngine vars input =
 
 exprToString :: Bindings -> StrExpr -> String
 exprToString _ (ExprStrLit str) = str
+
 exprToString bindings (ExprVar name) = toString $ getBinding bindings name
+
+exprToString bindings (ExprForeach selectorName listName exprs) =
+   let
+      list = toList $ getBinding bindings listName
+   in
+      undefined
 
 
 ----------------------------------------------------------------------------------------------------
