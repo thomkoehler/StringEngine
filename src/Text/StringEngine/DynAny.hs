@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances #-}
 
 module Text.StringEngine.DynAny where
 
