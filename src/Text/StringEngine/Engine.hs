@@ -12,6 +12,8 @@ import Text.StringEngine.Preprocessor
 import Text.StringEngine.DynAny
 import Text.StringEngine.ToString
 
+import Data.Maybe(fromMaybe)
+
 ----------------------------------------------------------------------------------------------------
 
 
@@ -43,13 +45,12 @@ createBindings xs = ScopeBindings $ Map.fromList $ map step xs
 
 
 getBinding :: Bindings -> String -> DynAny
-getBinding (ScopeBindings s) name =  case Map.lookup name s of
-   Just da -> da
-   Nothing -> error $ "Var " ++ name ++ " not found."
+getBinding (ScopeBindings s) name =
+   fromMaybe (error ("Var " ++ name ++ " not found.")) $ Map.lookup name s
 
-getBinding (ContextBindings c l) name = case lookupScope l name of
-   Just da -> da
-   Nothing -> getBinding c name
+
+getBinding (ContextBindings c l) name =
+   fromMaybe (getBinding c name) $ lookupScope l name
 
 
 strEngine :: [Var] -> String -> String

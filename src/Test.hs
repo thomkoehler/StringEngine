@@ -8,7 +8,7 @@ import Test.Framework
 
 import Text.StringEngine.Preprocessor
 import Text.StringEngine.Parser
-import Text.StringEngine.Engine
+import Text.StringEngine
 
 {-# ANN module ("HLint: ignore Use camelCase" :: String) #-}
 

@@ -89,7 +89,7 @@ foreach = do
 
 
 parseStr :: String -> [StrExpr]
-parseStr str = case (parse (many1 strExpr) "" str) of
+parseStr str = case parse (many1 strExpr) "" str of
    Left err -> error $ show err
    Right xs -> xs
 
