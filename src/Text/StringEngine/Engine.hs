@@ -71,4 +71,12 @@ exprToString bindings (ExprForeach selectorName listName exprs) = foldl' step ""
          in
             prefix ++ concatMap (exprToString localBindings) exprs
 
+exprToString bindings (ExprNull isNull name exprs) =
+   let
+      n = isNull $ getBinding bindings name
+   in
+      if isNull == n
+         then concatMap (exprToString bindings) exprs
+         else []
+
 ----------------------------------------------------------------------------------------------------

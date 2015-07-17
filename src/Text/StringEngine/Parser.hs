@@ -30,7 +30,9 @@ languageDef = P.LanguageDef
          [
             "for",
             "end",
-            "in"
+            "in",
+            "null",
+            "notnull"
          ],
       P.opStart = P.opLetter languageDef,
       P.opLetter = oneOf ":!#$%&*+./<=>?@\\^|-~",
@@ -41,6 +43,7 @@ languageDef = P.LanguageDef
 
 data StrExpr
    = ExprStrLit String
+   | ExprNull Bool String [StrExpr]
    | ExprVar String
    | ExprForeach String String [StrExpr]
    deriving(Show, Eq)
@@ -65,7 +68,8 @@ strExpr = choice
    [
       strLit,
       var,
-      foreach
+      foreach,
+      defined
    ]
 
 
@@ -92,5 +96,14 @@ parseStr :: String -> [StrExpr]
 parseStr str = case parse (many1 strExpr) "" str of
    Left err -> error $ show err
    Right xs -> xs
+
+
+defined :: Parser StrExpr
+defined = do
+   isNull <- choice [reserved "null" >> return True, reserved "notnull" >> return True]
+   name <- identifier
+   exprs <- many strExpr
+   reserved "end"
+   return $ ExprNull isNull name exprs
 
 ----------------------------------------------------------------------------------------------------

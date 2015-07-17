@@ -38,12 +38,19 @@ instance (ToDynAny d) => ToDynAny (Maybe d) where
 
 instance ToString DynAny where
    toString (DynString str) = str
-   toString _ = error "toString is not defined."
+   toString _ = error "String expected."
 
 
 toList :: DynAny -> [DynAny]
 toList da = case da of
    DynList ds -> ds
    _ -> error "List expected."
+
+
+isNull :: DynAny -> Bool
+isNull (DynList []) = True
+isNull DynNothing = True
+isNull _ = False
+
 
 ----------------------------------------------------------------------------------------------------
