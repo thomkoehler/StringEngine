@@ -8,7 +8,6 @@ module Main(main) where
 import Test.Framework
 
 import Text.StringEngine.Preprocessor
-import Text.StringEngine.Parser
 import Text.StringEngine
 
 {-# ANN module ("HLint: ignore Use camelCase" :: String) #-}
@@ -49,9 +48,6 @@ prop_Esc0 = preprocessor "\\<" == "\"<\""
 
 prop_Esc1 :: Bool
 prop_Esc1 = preprocessor "\\>" == "\">\""
-
-prop_Parser :: Bool
-prop_Parser = parseStr "\"Hello World\"" == [ExprStrLit "Hello World"]
 
 prop_StrEng_Var :: Bool
 prop_StrEng_Var = strEngine [Var "v1" "hallo"] "<v1>" == "hallo"

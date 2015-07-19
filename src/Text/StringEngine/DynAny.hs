@@ -11,7 +11,14 @@ data DynAny
    | DynBool Bool
    | DynList [DynAny]
    | DynNothing
+   deriving Eq
 
+
+dynTrue :: DynAny
+dynTrue = DynBool True
+
+dynFalse :: DynAny
+dynFalse = DynBool False
 
 class ToDynAny a where
    toDynAny :: a -> DynAny

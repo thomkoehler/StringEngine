@@ -2,8 +2,7 @@
 
 module Text.StringEngine.Parser
 (
-   StrExpr(..),
-   BoolExpr(..),
+   Expression(..),
    parseStr
 )
 where
@@ -11,8 +10,9 @@ where
 import Text.Parsec
 import qualified Text.Parsec.Token as P
 import Text.Parsec.Language
-
 import Control.Monad.Identity
+
+import Text.StringEngine.DynAny
 
 ----------------------------------------------------------------------------------------------------
 
@@ -43,16 +43,11 @@ languageDef = P.LanguageDef
    }
 
 
-data StrExpr
-   = ExprStrLit String
+data Expression
+   = ExprLiteral DynAny
    | ExprVar String
-   | ExprForeach String String [StrExpr]
-   | ExprIf BoolExpr [StrExpr]
-   deriving Eq
-
-
-data BoolExpr
-   = ExprBoolLit Bool
+   | ExprForeach String String [Expression]
+   | ExprIf Expression [Expression]
    deriving Eq
 
 
@@ -70,58 +65,55 @@ reserved :: String -> Parser ()
 reserved = P.reserved lexer
 
 
-strExpr :: Parser StrExpr
-strExpr = choice
+expression :: Parser Expression
+expression = choice
    [
       strLit,
+      boolLit,
       var,
       foreach,
       exprIf
    ]
 
 
-strLit :: Parser StrExpr
-strLit = liftM ExprStrLit stringLiteral
+strLit :: Parser Expression
+strLit = liftM (ExprLiteral . DynString) stringLiteral
 
 
-var :: Parser StrExpr
+var :: Parser Expression
 var = liftM ExprVar identifier
 
 
-foreach :: Parser StrExpr
+foreach :: Parser Expression
 foreach = do
    reserved "for"
    sel <- identifier
    reserved "in"
    list <- identifier
-   exprs <- many strExpr
+   exprs <- many expression
    reserved "end"
    return $ ExprForeach sel list exprs
 
 
-boolExpr :: Parser BoolExpr
-boolExpr = boolLit
-
-
-boolLit :: Parser BoolExpr
+boolLit :: Parser Expression
 boolLit = choice
    [
-      reserved "True" >> return (ExprBoolLit True),
-      reserved "False" >> return (ExprBoolLit False)
+      reserved "True" >> return (ExprLiteral dynTrue),
+      reserved "False" >> return (ExprLiteral dynFalse)
    ]
 
 
-exprIf :: Parser StrExpr
+exprIf :: Parser Expression
 exprIf = do
    reserved "if"
-   b <- boolExpr
-   exprs <- many strExpr
+   b <- expression
+   exprs <- many expression
    reserved "end"
    return $ ExprIf b exprs
 
 
-parseStr :: String -> [StrExpr]
-parseStr str = case parse (many1 strExpr) "" str of
+parseStr :: String -> [Expression]
+parseStr str = case parse (many1 expression) "" str of
    Left err -> error $ show err
    Right xs -> xs
 

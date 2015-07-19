@@ -16,8 +16,8 @@ pattern EscChar = '\\'
 
 
 data Token
-   = StrLiteral String
-   | Expressions String
+   = TokenStrLiteral String
+   | TokenExprs String
    deriving(Show, Eq)
 
 
@@ -28,8 +28,8 @@ data LexerState
 
 
 instance ToString Token where
-   toString (Expressions str) = str
-   toString (StrLiteral str) = "\"" ++ (intercalate "\\n" $ lines str) ++ "\""
+   toString (TokenExprs str) = str
+   toString (TokenStrLiteral str) = "\"" ++ (intercalate "\\n" $ lines str) ++ "\""
 
 
 preprocessor :: String -> String
@@ -39,7 +39,7 @@ preprocessor = concatMap toString . lexer
 lexer :: String -> [Token]
 lexer str = case endState of
    InString [] -> filteredTokens
-   InString s -> filteredTokens ++ [StrLiteral s]
+   InString s -> filteredTokens ++ [TokenStrLiteral s]
    _ -> error "Unexpected end"
 
    where
@@ -47,14 +47,14 @@ lexer str = case endState of
       filteredTokens = filter notEmpty _tokens
 
       step (prefixTokens, currentState) _char = case (currentState, _char) of
-         (InString prefixStr, DelBeginChar) -> (prefixTokens ++ [StrLiteral prefixStr], InStatements "")
+         (InString prefixStr, DelBeginChar) -> (prefixTokens ++ [TokenStrLiteral prefixStr], InStatements "")
          (InString prefixStr, EscChar) -> (prefixTokens, Escape prefixStr)
          (InString prefixStr, _) -> (prefixTokens, InString (prefixStr ++ [_char]))
          (Escape prefixStr, _) -> (prefixTokens, InString (prefixStr ++ [_char]))
-         (InStatements prefixStr, DelEndChar) -> (prefixTokens ++ [Expressions prefixStr], InString "")
+         (InStatements prefixStr, DelEndChar) -> (prefixTokens ++ [TokenExprs prefixStr], InString "")
          (InStatements prefixStr, _) -> (prefixTokens, InStatements (prefixStr ++ [_char]))
 
-      notEmpty (StrLiteral []) = False
+      notEmpty (TokenStrLiteral []) = False
       notEmpty _ = True
 
 ----------------------------------------------------------------------------------------------------

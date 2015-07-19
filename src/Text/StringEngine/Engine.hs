@@ -52,15 +52,15 @@ strEngine vars input =
       afterPP = preprocessor input
       exprs = parseStr afterPP
    in
-      concatMap (evalStrExpr bindings) exprs
+      concatMap (asString . evalExpr bindings) exprs
 
 
-evalStrExpr :: Bindings -> StrExpr -> String
-evalStrExpr _ (ExprStrLit str) = str
+evalExpr :: Bindings -> Expression -> DynAny
+evalExpr _ (ExprLiteral da) = da
 
-evalStrExpr bindings (ExprVar name) = asString $ getBinding bindings name
+evalExpr bindings (ExprVar name) = getBinding bindings name
 
-evalStrExpr bindings (ExprForeach selectorName listName exprs) = foldl' step "" list
+evalExpr bindings (ExprForeach selectorName listName exprs) = foldl' step "" list
    where
       list = asList $ getBinding bindings listName
 
@@ -68,7 +68,17 @@ evalStrExpr bindings (ExprForeach selectorName listName exprs) = foldl' step "" 
          let
             localBindings = ContextBindings bindings $ createBindings [Var selectorName var]
          in
-            prefix ++ concatMap (evalStrExpr localBindings) exprs
+            prefix ++ concatMap (evalExpr localBindings) exprs
+
+
+
+{--
+
+evalStrExpr :: Bindings -> StrExpr -> String
+evalStrExpr _ (ExprStrLit str) = str
+
+evalStrExpr bindings (ExprVar name) = asString $ getBinding bindings name
+
 
 evalStrExpr bindings (ExprIf boolExpr strExprs) =
    if evalBoolExpr bindings boolExpr
@@ -79,5 +89,7 @@ evalStrExpr bindings (ExprIf boolExpr strExprs) =
 evalBoolExpr :: Bindings -> BoolExpr -> Bool
 evalBoolExpr _ (ExprBoolLit b) = b
 
+
+--}
 
 ----------------------------------------------------------------------------------------------------
