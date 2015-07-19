@@ -10,7 +10,6 @@ import qualified Data.Map as Map
 import Text.StringEngine.Parser
 import Text.StringEngine.Preprocessor
 import Text.StringEngine.DynAny
-import Text.StringEngine.ToString
 
 import Data.Maybe(fromMaybe)
 import Data.List(foldl')
@@ -53,30 +52,32 @@ strEngine vars input =
       afterPP = preprocessor input
       exprs = parseStr afterPP
    in
-      concatMap (exprToString bindings) exprs
+      concatMap (evalStrExpr bindings) exprs
 
 
-exprToString :: Bindings -> StrExpr -> String
-exprToString _ (ExprStrLit str) = str
+evalStrExpr :: Bindings -> StrExpr -> String
+evalStrExpr _ (ExprStrLit str) = str
 
-exprToString bindings (ExprVar name) = toString $ getBinding bindings name
+evalStrExpr bindings (ExprVar name) = asString $ getBinding bindings name
 
-exprToString bindings (ExprForeach selectorName listName exprs) = foldl' step "" list
+evalStrExpr bindings (ExprForeach selectorName listName exprs) = foldl' step "" list
    where
-      list = toList $ getBinding bindings listName
+      list = asList $ getBinding bindings listName
 
       step prefix var =
          let
             localBindings = ContextBindings bindings $ createBindings [Var selectorName var]
          in
-            prefix ++ concatMap (exprToString localBindings) exprs
+            prefix ++ concatMap (evalStrExpr localBindings) exprs
 
-exprToString bindings (ExprNull isNull name exprs) =
-   let
-      n = isNull $ getBinding bindings name
-   in
-      if isNull == n
-         then concatMap (exprToString bindings) exprs
-         else []
+evalStrExpr bindings (ExprIf boolExpr strExprs) =
+   if evalBoolExpr bindings boolExpr
+      then concatMap (evalStrExpr bindings) strExprs
+      else ""
+
+
+evalBoolExpr :: Bindings -> BoolExpr -> Bool
+evalBoolExpr _ (ExprBoolLit b) = b
+
 
 ----------------------------------------------------------------------------------------------------

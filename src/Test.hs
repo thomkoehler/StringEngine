@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------------------------------
 
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
-{-# LANGUAGE QuasiQuotes, TemplateHaskell #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Main(main) where
 
@@ -73,6 +73,13 @@ prop_Foreach2 = strEngine [Var "list" ["a", "b", "c"]] "<for c in list>A<c end>"
 
 prop_Foreach3 :: Bool
 prop_Foreach3 = strEngine [Var "list" ["a", "b", "c"]] "<for c in list>A<c>B<end>" == "AaBAbBAcB"
+
+prop_IfTrue :: Bool
+prop_IfTrue = strEngine [] "<if True>abc<end>" == "abc"
+
+prop_IfFalse :: Bool
+prop_IfFalse = strEngine [] "<if False>abc<end>" == ""
+
 
 ----------------------------------------------------------------------------------------------------
 

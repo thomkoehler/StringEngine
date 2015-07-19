@@ -4,13 +4,11 @@
 
 module Text.StringEngine.DynAny where
 
-
-import Text.StringEngine.ToString
-
 ----------------------------------------------------------------------------------------------------
 
 data DynAny
    = DynString String
+   | DynBool Bool
    | DynList [DynAny]
    | DynNothing
 
@@ -36,21 +34,19 @@ instance (ToDynAny d) => ToDynAny (Maybe d) where
    toDynAny Nothing = DynNothing
 
 
-instance ToString DynAny where
-   toString (DynString str) = str
-   toString _ = error "String expected."
+asBool :: DynAny -> Bool
+asBool (DynBool b) = b
+asBool _ = error "Bool expected."
 
 
-toList :: DynAny -> [DynAny]
-toList da = case da of
+asString :: DynAny -> String
+asString (DynString str) = str
+asString _ = error "String expected."
+
+
+asList :: DynAny -> [DynAny]
+asList da = case da of
    DynList ds -> ds
    _ -> error "List expected."
-
-
-isNull :: DynAny -> Bool
-isNull (DynList []) = True
-isNull DynNothing = True
-isNull _ = False
-
 
 ----------------------------------------------------------------------------------------------------

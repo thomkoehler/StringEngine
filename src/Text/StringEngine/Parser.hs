@@ -3,6 +3,7 @@
 module Text.StringEngine.Parser
 (
    StrExpr(..),
+   BoolExpr(..),
    parseStr
 )
 where
@@ -31,8 +32,9 @@ languageDef = P.LanguageDef
             "for",
             "end",
             "in",
-            "null",
-            "notnull"
+            "True",
+            "False",
+            "if"
          ],
       P.opStart = P.opLetter languageDef,
       P.opLetter = oneOf ":!#$%&*+./<=>?@\\^|-~",
@@ -43,10 +45,15 @@ languageDef = P.LanguageDef
 
 data StrExpr
    = ExprStrLit String
-   | ExprNull Bool String [StrExpr]
    | ExprVar String
    | ExprForeach String String [StrExpr]
-   deriving(Show, Eq)
+   | ExprIf BoolExpr [StrExpr]
+   deriving Eq
+
+
+data BoolExpr
+   = ExprBoolLit Bool
+   deriving Eq
 
 
 lexer :: P.GenTokenParser String () Identity
@@ -69,7 +76,7 @@ strExpr = choice
       strLit,
       var,
       foreach,
-      defined
+      exprIf
    ]
 
 
@@ -92,18 +99,30 @@ foreach = do
    return $ ExprForeach sel list exprs
 
 
+boolExpr :: Parser BoolExpr
+boolExpr = boolLit
+
+
+boolLit :: Parser BoolExpr
+boolLit = choice
+   [
+      reserved "True" >> return (ExprBoolLit True),
+      reserved "False" >> return (ExprBoolLit False)
+   ]
+
+
+exprIf :: Parser StrExpr
+exprIf = do
+   reserved "if"
+   b <- boolExpr
+   exprs <- many strExpr
+   reserved "end"
+   return $ ExprIf b exprs
+
+
 parseStr :: String -> [StrExpr]
 parseStr str = case parse (many1 strExpr) "" str of
    Left err -> error $ show err
    Right xs -> xs
-
-
-defined :: Parser StrExpr
-defined = do
-   isNull <- choice [reserved "null" >> return True, reserved "notnull" >> return True]
-   name <- identifier
-   exprs <- many strExpr
-   reserved "end"
-   return $ ExprNull isNull name exprs
 
 ----------------------------------------------------------------------------------------------------
