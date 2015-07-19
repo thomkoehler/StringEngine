@@ -12,7 +12,7 @@ import Text.StringEngine.Preprocessor
 import Text.StringEngine.DynAny
 
 import Data.Maybe(fromMaybe)
-import Data.List(foldl')
+import Data.List(foldl', foldl1')
 
 ----------------------------------------------------------------------------------------------------
 
@@ -60,6 +60,19 @@ evalExpr _ (ExprLiteral da) = da
 
 evalExpr bindings (ExprVar name) = getBinding bindings name
 
+evalExpr bindings (ExprIf boolExpr exprs) =
+   if asBool (evalExpr bindings boolExpr)
+      then foldl1'   concatMap (evalStrExpr bindings) strExprs
+      else emptyString
+
+
+{--
+
+evalStrExpr :: Bindings -> StrExpr -> String
+evalStrExpr _ (ExprStrLit str) = str
+
+evalStrExpr bindings (ExprVar name) = asString $ getBinding bindings name
+
 evalExpr bindings (ExprForeach selectorName listName exprs) = foldl' step "" list
    where
       list = asList $ getBinding bindings listName
@@ -69,15 +82,6 @@ evalExpr bindings (ExprForeach selectorName listName exprs) = foldl' step "" lis
             localBindings = ContextBindings bindings $ createBindings [Var selectorName var]
          in
             prefix ++ concatMap (evalExpr localBindings) exprs
-
-
-
-{--
-
-evalStrExpr :: Bindings -> StrExpr -> String
-evalStrExpr _ (ExprStrLit str) = str
-
-evalStrExpr bindings (ExprVar name) = asString $ getBinding bindings name
 
 
 evalStrExpr bindings (ExprIf boolExpr strExprs) =

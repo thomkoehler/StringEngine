@@ -4,6 +4,7 @@
 
 module Text.StringEngine.DynAny where
 
+
 ----------------------------------------------------------------------------------------------------
 
 data DynAny
@@ -19,6 +20,10 @@ dynTrue = DynBool True
 
 dynFalse :: DynAny
 dynFalse = DynBool False
+
+
+emptyString :: DynAny
+emptyString = DynString ""
 
 class ToDynAny a where
    toDynAny :: a -> DynAny
@@ -39,6 +44,16 @@ instance (ToDynAny d) => ToDynAny [d] where
 instance (ToDynAny d) => ToDynAny (Maybe d) where
    toDynAny (Just d) = toDynAny d
    toDynAny Nothing = DynNothing
+
+
+appendDynAny :: DynAny -> DynAny -> DynAny
+appendDynAny (DynString s0) (DynString s1) = (DynString (s0 ++ s1))
+appendDynAny _ _ = error "String expected."
+
+
+concatDynAny :: [DynAny]-> DynAny
+concatDynAny [da] = da
+concatDynAny = foldl1 appendDynAny
 
 
 asBool :: DynAny -> Bool
