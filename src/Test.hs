@@ -20,6 +20,7 @@ main = htfMain htf_thisModulesTests
 
 test_test0 :: IO ()
 test_test0 = do
+   putStrLn $ show $ preprocessor templ
    putStrLn $ strEngine [Var "functions" ["foo0", "foo1"], Var "ns" (Just "test")] templ
    where
       templ = [str|
@@ -41,7 +42,6 @@ class Test
 <end>
 
 |]
-
 
 prop_SimpleStr :: Bool
 prop_SimpleStr = preprocessor "<Hello World>" == "Hello World"
@@ -96,6 +96,13 @@ prop_isNull1 = strEngine [Var "mb" (Just "hallo")] "<if isNotNull(mb) mb end>" =
 
 prop_isNull2 :: Bool
 prop_isNull2 = strEngine [Var "mb" (Just "hallo")] "<if isNotNull(mb)>1<mb>2<end>" == "1hallo2"
+
+prop_Hash0 :: Bool
+prop_Hash0 = strEngine [] "#define Hallo" == "#define Hallo"
+
+prop_Hash1 :: Bool
+prop_Hash1 = strEngine [] [str|#include\<string\>|] == "#include<string>"
+
 
 ----------------------------------------------------------------------------------------------------
 
