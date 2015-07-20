@@ -20,16 +20,26 @@ main = htfMain htf_thisModulesTests
 
 test_test0 :: IO ()
 test_test0 = do
-   putStrLn $ show $ preprocessor templ
-   putStrLn $ strEngine [Var "functions" ["foo0", "foo1"]] templ
+   putStrLn $ strEngine [Var "functions" ["foo0", "foo1"], Var "ns" (Just "test")] templ
    where
       templ = [str|
+
+<if isNotNull(ns)>
+namespace <ns>
+{
+<end>
+
 class Test
 {
 <for function in functions>
    void <function>();
 <end>
 };
+
+<if isNotNull(ns)>
+} // namespace <ns>
+<end>
+
 |]
 
 
@@ -78,6 +88,14 @@ prop_IfTrue = strEngine [] "<if True>abc<end>" == "abc"
 prop_IfFalse :: Bool
 prop_IfFalse = strEngine [] "<if False>abc<end>" == ""
 
+prop_isNull0 :: Bool
+prop_isNull0 = strEngine [Var "mb" (Nothing :: Maybe String)] "<if isNotNull(mb) mb end>" == ""
+
+prop_isNull1 :: Bool
+prop_isNull1 = strEngine [Var "mb" (Just "hallo")] "<if isNotNull(mb) mb end>" == "hallo"
+
+prop_isNull2 :: Bool
+prop_isNull2 = strEngine [Var "mb" (Just "hallo")] "<if isNotNull(mb)>1<mb>2<end>" == "1hallo2"
 
 ----------------------------------------------------------------------------------------------------
 

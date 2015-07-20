@@ -8,6 +8,7 @@ import qualified Data.Map as Map
 import Text.StringEngine.Parser
 import Text.StringEngine.Preprocessor
 import Text.StringEngine.DynAny
+import Text.StringEngine.Functions
 
 import Data.Maybe(fromMaybe)
 import Data.List(foldl')
@@ -68,5 +69,9 @@ evalExpr bindings (ExprForeach selectorName listName exprs) = concatDynAny $ fol
       step prefix var = prefix ++ map (evalExpr localBindings) exprs
          where
             localBindings = ContextBindings bindings $ createBindings [Var selectorName var]
+
+evalExpr bindings (ExprFunCall funName exprs) = case exprs of
+   [expr] -> (lookupFunction1 funName) (evalExpr bindings expr)
+   _ -> error ("Function " ++ funName ++ " is unknown.")
 
 ----------------------------------------------------------------------------------------------------

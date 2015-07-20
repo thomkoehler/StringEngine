@@ -53,6 +53,11 @@ instance ToDynAny String where
    toDynAny = DynString
 
 
+instance ToDynAny Bool where
+   toDynAny True = dynTrue
+   toDynAny False = dynFalse
+
+
 instance (ToDynAny d) => ToDynAny [d] where
    toDynAny = DynList . map toDynAny
 

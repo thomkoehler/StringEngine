@@ -6,7 +6,9 @@ module Text.StringEngine.Lexer
    Parser,
    identifier,
    stringLiteral,
-   reserved
+   reserved,
+   parens,
+   commaSep
 )
 where
 
@@ -39,7 +41,7 @@ languageDef = P.LanguageDef
          ],
       P.opStart = P.opLetter languageDef,
       P.opLetter = oneOf ":!#$%&*+./<=>?@\\^|-~",
-      P.reservedOpNames = ["++"],
+      P.reservedOpNames = ["!"],
       P.caseSensitive  = True
    }
 
@@ -55,5 +57,11 @@ stringLiteral = P.stringLiteral lexer
 
 reserved :: String -> Parser ()
 reserved = P.reserved lexer
+
+parens :: Parser a -> Parser a
+parens = P.parens lexer
+
+commaSep :: Parser a -> Parser [a]
+commaSep = P.commaSep lexer
 
 ----------------------------------------------------------------------------------------------------

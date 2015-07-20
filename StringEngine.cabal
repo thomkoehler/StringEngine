@@ -1,3 +1,4 @@
+
 name: StringEngine
 version: 0.0.1
 cabal-version: >=1.2
@@ -15,7 +16,8 @@ library
                    Text.StringEngine.Parser,
                    Text.StringEngine.Engine,
                    Text.StringEngine.ToString,
-                   Text.StringEngine.DynAny
+                   Text.StringEngine.DynAny,
+                   Text.StringEngine.Functions
 
     ghc-options: -Wall -rtsopts
 

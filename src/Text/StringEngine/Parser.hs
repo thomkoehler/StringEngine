@@ -20,6 +20,7 @@ data Expression
    | ExprVar String
    | ExprForeach String String [Expression]
    | ExprIf Expression [Expression]
+   | ExprFunCall String [Expression]
    deriving Eq
 
 
@@ -28,9 +29,9 @@ expression = choice
    [
       strLit,
       boolLit,
-      var,
+      exprIf,
       foreach,
-      exprIf
+      varOrFunCall
    ]
 
 
@@ -38,8 +39,15 @@ strLit :: Parser Expression
 strLit = liftM (ExprLiteral . DynString) stringLiteral
 
 
-var :: Parser Expression
-var = liftM ExprVar identifier
+varOrFunCall :: Parser Expression
+varOrFunCall = do
+   name <- identifier
+   params <- option Nothing $ do
+      _params <- parens $ commaSep expression
+      return $ Just _params
+   case params of
+      Nothing -> return $ ExprVar name
+      Just ps -> return $ ExprFunCall name ps
 
 
 foreach :: Parser Expression
