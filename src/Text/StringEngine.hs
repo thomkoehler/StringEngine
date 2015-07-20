@@ -6,7 +6,8 @@ module Text.StringEngine(str, strEngine, Var(..)) where
 
 import Language.Haskell.TH.Quote
 
-import Text.StringEngine.Engine(strEngine, Var(..))
+import Text.StringEngine.Engine(strEngine)
+import Text.StringEngine.DynAny(Var(..))
 
 ---------------------------------------------------------------------------------------------------
 

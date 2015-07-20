@@ -1,11 +1,26 @@
 ----------------------------------------------------------------------------------------------------
 
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, ExistentialQuantification #-}
 
-module Text.StringEngine.DynAny where
+module Text.StringEngine.DynAny
+(
+   DynAny(..),
+   ToDynAny(..),
+   Var(..),
+   dynTrue,
+   dynFalse,
+   emptyString,
+   concatDynAny,
+   asBool,
+   asString,
+   asList
+)
+where
 
 
 ----------------------------------------------------------------------------------------------------
+
+data Var = forall da. ToDynAny da => Var String da
 
 data DynAny
    = DynString String
@@ -24,6 +39,7 @@ dynFalse = DynBool False
 
 emptyString :: DynAny
 emptyString = DynString ""
+
 
 class ToDynAny a where
    toDynAny :: a -> DynAny
@@ -53,7 +69,7 @@ appendDynAny _ _ = error "String expected."
 
 concatDynAny :: [DynAny]-> DynAny
 concatDynAny [da] = da
-concatDynAny = foldl1 appendDynAny
+concatDynAny ds = foldl1 appendDynAny ds
 
 
 asBool :: DynAny -> Bool

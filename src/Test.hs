@@ -19,9 +19,11 @@ main = htfMain htf_thisModulesTests
 
 
 test_test0 :: IO ()
-test_test0 = putStrLn test0
+test_test0 = do
+   putStrLn $ show $ preprocessor templ
+   putStrLn $ strEngine [Var "functions" ["foo0", "foo1"]] templ
    where
-      test0 = strEngine [Var "functions" ["foo0", "foo1"]] [str|
+      templ = [str|
 class Test
 {
 <for function in functions>
