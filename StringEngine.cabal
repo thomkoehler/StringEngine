@@ -1,13 +1,16 @@
 
 name: StringEngine
-version: 0.0.1
+version: 0.0.2
 cabal-version: >=1.2
 build-type: Simple
 license: AllRightsReserved
 
 library
-    build-depends: base >=4, template-haskell -any, containers -any,
-                   parsec -any, mtl -any
+    build-depends: base >=4,
+                   template-haskell >=2.9,
+                   containers >=0.5,
+                   parsec >=3.1,
+                   mtl >=2.1
     exposed-modules: Text.StringEngine
     exposed: True
     buildable: True
@@ -22,8 +25,8 @@ library
     ghc-options: -Wall -rtsopts
 
 test-suite Test
-    build-depends: base >=4, HTF >0.9, template-haskell -any,
-                   containers -any, parsec -any, mtl -any
+    build-depends: base >=4,
+                   HTF >0.9
     type: exitcode-stdio-1.0
     main-is: Test.hs
     buildable: True
