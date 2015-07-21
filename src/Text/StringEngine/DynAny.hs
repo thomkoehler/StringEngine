@@ -79,6 +79,7 @@ appendDynAny _ _ = error "String expected."
 
 
 concatDynAny :: [DynAny]-> DynAny
+concatDynAny [] = DynString ""
 concatDynAny [da] = da
 concatDynAny ds = foldl1 appendDynAny ds
 
