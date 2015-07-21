@@ -10,7 +10,8 @@ library
                    template-haskell >=2.9,
                    containers >=0.5,
                    parsec >=3.1,
-                   mtl >=2.1
+                   mtl >=2.1,
+                   bytestring -any
     exposed-modules: Text.StringEngine
     exposed: True
     buildable: True

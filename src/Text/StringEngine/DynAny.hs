@@ -17,6 +17,8 @@ module Text.StringEngine.DynAny
 )
 where
 
+import qualified Data.ByteString.Char8 as C
+import qualified Data.ByteString as B
 
 ----------------------------------------------------------------------------------------------------
 
@@ -47,6 +49,10 @@ class ToDynAny a where
 
 instance ToDynAny DynAny where
    toDynAny = id
+
+
+instance ToDynAny B.ByteString where
+   toDynAny = DynString . C.unpack
 
 
 instance ToDynAny String where
